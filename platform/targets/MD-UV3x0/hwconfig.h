@@ -61,6 +61,10 @@ extern const struct Adc adc1;
 #define CONFIG_BAT_LIION
 #define CONFIG_BAT_NCELLS 2
 
+/* Character device for rtxlink communication */
+extern struct chardev rtxlink_dev;
+#define RTXLINK_DEV &rtxlink_dev
+
 /* Device supports M17 mode */
 #define CONFIG_M17
 

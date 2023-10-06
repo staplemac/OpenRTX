@@ -70,6 +70,10 @@ extern const struct Adc adc1;
 /* Enable T9 functions for SMS */
 #define CONFIG_T9
 
+/* Character device for rtxlink communication */
+extern struct chardev rtxlink_dev;
+#define RTXLINK_DEV &rtxlink_dev
+
 #ifdef __cplusplus
 }
 #endif
