@@ -88,6 +88,49 @@ static uint8_t spiSr_func(const void *priv, uint8_t value)
     return 0;
 }
 
+/**
+ * SPI bitbang function for HR_C6000 command interface (U_SPI).
+ *
+ * Hand-tuned to be as fast as possible, gives the following clock performance
+ * when compiled with -Os and run on STM32F405 at 168MHz:
+ *
+ * - Freq 6.46MHz
+ * - Pos. width 71ns
+ * - Neg. with 83ns
+ */
+static uint8_t spiC6000_func(const void *priv, uint8_t value)
+{
+    (void) priv;
+    uint8_t incoming = 0;
+
+    __disable_irq();
+
+    for(uint8_t cnt = 0; cnt < 8; cnt++)
+    {
+        GPIOB->BSRR = (1 << 13);    // Set PB13 (CLK)
+
+        if(value & (0x80 >> cnt))
+            GPIOB->BSRR = 1 << 15;  // Set PB15 (MOSI)
+        else
+            GPIOB->BSRR = 1 << 31;  // Clear PB15 (MOSI)
+
+        // ~70ns delay
+        asm volatile("           mov   r1, #1     \n"
+                     "___loop_1: cmp   r1, #0     \n"
+                     "           itt   ne         \n"
+                     "           subne r1, r1, #1 \n"
+                     "           bne   ___loop_1  \n":::"r1");
+
+        incoming <<= 1;
+        GPIOB->BSRR = (1 << 29);                // Clear PB13 (CLK)
+        incoming |= (GPIOB->IDR >> 14) & 0x01;  // Read PB14 (MISO)
+    }
+
+    __enable_irq();
+
+    return incoming;
+}
+
 static const struct gpioPin shiftRegStrobe = { GPIOEXT_STR };
 static pthread_mutex_t adc1Mutex;
 static pthread_mutex_t c6000_mutex;
