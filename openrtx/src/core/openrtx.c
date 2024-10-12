@@ -96,6 +96,7 @@ void *openrtx_run(void *arg)
 
     // Device thread terminated, complete shutdown sequence
     state_terminate();
+    rtxlink_terminate();
     platform_terminate();
 
     return NULL;
