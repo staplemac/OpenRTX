@@ -456,6 +456,10 @@ int _ui_getSMSValueName(char *buf, uint8_t max_len, uint8_t index)
         case M17_SMSMATCHCALL:
             sniprintf(buf, max_len, "%s", last_state.settings.m17_sms_match_call ? currentLanguage->on : currentLanguage->off);
             break;
+
+        case M17_SMSSENDDEF:
+            buf[0] = 0;
+            break;
     }
 
     return 0;

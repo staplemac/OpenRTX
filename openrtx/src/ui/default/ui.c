@@ -189,7 +189,8 @@ const char *menu_m17sms_items[] =
     {
         "Send Msg",
         "View Msg",
-        "Match Call"
+        "Match Call",
+        "Send Default Txt"
 };
 
 const char * settings_m17_items[] =
@@ -2474,6 +2475,11 @@ void ui_updateFSM(bool *sync_rtx)
                     {
                         state.settings.m17_sms_match_call = !state.settings.m17_sms_match_call;
                         *sync_rtx = true;
+                    }
+                    else if(ui_state.menu_selected == M17_SMSSENDDEF)
+                    {
+                        strncpy(state.sms_message, "jojo siwas dead and I'm here now", 821);
+                        state.havePacketData = true;
                     }
                 }
                 else if(msg.keys & KEY_UP || msg.keys & KNOB_LEFT)

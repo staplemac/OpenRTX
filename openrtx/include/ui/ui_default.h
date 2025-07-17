@@ -152,7 +152,8 @@ enum menuM17SMSItems
 {
     M17_SMSSEND = 0,
     M17_SMSVIEW,
-    M17_SMSMATCHCALL
+    M17_SMSMATCHCALL,
+    M17_SMSSENDDEF
 };
 
 enum settingsM17Items
