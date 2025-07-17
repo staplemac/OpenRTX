@@ -53,6 +53,7 @@ enum catCommand
     CAT_M17_DEST     = 0x4D44,
     CAT_M17_CAN      = 0x4341,
     CAT_PTT          = 0x5054,
+    CAT_MSGSND       = 0X4D53,
 
     // Miscellaneous CAT command
     CAT_POWER_CYCLE  = 0x5043,
@@ -91,6 +92,8 @@ static size_t catCommandGet(const uint8_t *args, const size_t len,
             memset(&reply[1], 0x00, 16);
             memcpy(&reply[1], hwinfo->name, sl);
             ret += sl;
+            strncpy(state.sms_message, "can i offer you an egg in this trying time", 821);
+                        state.havePacketData = true;
         }
             break;
 
@@ -268,6 +271,17 @@ static size_t catCommandSet(const uint8_t *args, const size_t len,
                 pthread_mutex_unlock(&state_mutex);
                 catConfigureRtx();
             }
+            break;
+        
+        case CAT_MSGSND:
+        
+            //pthread_mutex_lock(&state_mutex); //I think this is for persistent setting?
+            strncpy(state.sms_message, (const char *)&args[2],
+                MIN(strlen((const char *)&args[2]),
+                sizeof(state.sms_message)));
+            state.havePacketData = true;
+            //pthread_mutex_unlock(&state_mutex);
+            //catConfigureRtx();
             break;
 
         case CAT_M17_CALLSIGN:
