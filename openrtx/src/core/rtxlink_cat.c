@@ -92,8 +92,6 @@ static size_t catCommandGet(const uint8_t *args, const size_t len,
             memset(&reply[1], 0x00, 16);
             memcpy(&reply[1], hwinfo->name, sl);
             ret += sl;
-            strncpy(state.sms_message, "can i offer you an egg in this trying time", 821);
-                        state.havePacketData = true;
         }
             break;
 
