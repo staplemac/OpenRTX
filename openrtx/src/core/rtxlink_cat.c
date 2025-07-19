@@ -52,8 +52,8 @@ enum catCommand
     CAT_M17_CALLSIGN = 0x4D43,
     CAT_M17_DEST     = 0x4D44,
     CAT_M17_CAN      = 0x4341,
+    CAT_M17_MSG      = 0x4D47,
     CAT_PTT          = 0x5054,
-    CAT_MSGSND       = 0X4D53,
 
     // Miscellaneous CAT command
     CAT_POWER_CYCLE  = 0x5043,
@@ -165,6 +165,22 @@ static size_t catCommandGet(const uint8_t *args, const size_t len,
             ret += 1;
             break;
 
+        case CAT_M17_MSG:
+
+            status = rtx_getCurrentStatus();
+            char sender[10];
+            char message[821];
+            char senderCommaMessage[831];
+            memset(&reply[1], 0x00, 831);
+            if(rtx_getSMSMessage(0, sender, message)){
+                strcpy(senderCommaMessage, sender);
+                strcat(senderCommaMessage, ",");
+                strcat(senderCommaMessage, message);
+                memcpy(&reply[1], senderCommaMessage, sizeof(senderCommaMessage));
+                ret += sizeof(senderCommaMessage);
+            }
+            break;
+
         default:
             reply[0] = CAT_FRAME_ACK;
             reply[1] = EBADRQC;
@@ -271,7 +287,7 @@ static size_t catCommandSet(const uint8_t *args, const size_t len,
             }
             break;
         
-        case CAT_MSGSND:
+        case CAT_M17_MSG:
         
             //pthread_mutex_lock(&state_mutex); //I think this is for persistent setting?
             strncpy(state.sms_message, (const char *)&args[2],

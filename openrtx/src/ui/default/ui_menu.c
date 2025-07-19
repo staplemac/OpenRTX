@@ -28,7 +28,7 @@
 #include <ui/ui_default.h>
 #include <interfaces/nvmem.h>
 #include <interfaces/cps_io.h>
-#include <interfaces/platform.h>
+#include <interfaces/plaStform.h>
 #include <interfaces/delays.h>
 #include <memory_profiling.h>
 #include <ui/ui_strings.h>
