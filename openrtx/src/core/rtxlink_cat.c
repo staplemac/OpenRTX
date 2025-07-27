@@ -168,7 +168,6 @@ static size_t catCommandGet(const uint8_t *args, const size_t len,
         case CAT_M17_MSG:
 
             status = rtx_getCurrentStatus();
-            size_t sl = strlen(hwinfo->name);
             char sender[10];
             char message[821];
             char senderCommaMessage[831];
@@ -178,7 +177,16 @@ static size_t catCommandGet(const uint8_t *args, const size_t len,
                 strcat(senderCommaMessage, ",");
                 strcat(senderCommaMessage, message);
                 memcpy(&reply[1], senderCommaMessage, sizeof(senderCommaMessage));
-                ret += sizeof(senderCommaMessage);
+                ret += strlen(senderCommaMessage) + 1;
+
+                rtx_delSMSMessage(state.currentSMSMessage);
+                if(state.totalSMSMessages > 0)
+                    state.totalSMSMessages--;
+                state.currentSMSMessage = 0;
+            } else {
+                strcpy(senderCommaMessage, "NONE");
+                memcpy(&reply[1], senderCommaMessage, sizeof(senderCommaMessage));
+                ret += strlen(senderCommaMessage) + 1;
             }
             break;
 
