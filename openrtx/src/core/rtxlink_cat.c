@@ -168,6 +168,7 @@ static size_t catCommandGet(const uint8_t *args, const size_t len,
         case CAT_M17_MSG:
 
             status = rtx_getCurrentStatus();
+            size_t sl = strlen(hwinfo->name);
             char sender[10];
             char message[821];
             char senderCommaMessage[831];
